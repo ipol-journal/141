@@ -35,7 +35,7 @@ if dy > 400:
     img.resize((int(dx*400/dy), 400))
     (dx, dy) = img.size
     if dx > 400:
-        img.resize((400, int(dy*400/dx)))
+        img = img.resize((400, int(dy*400/dx)))
     img.save(f'{m}.png')
 
 outname = 'denoised'
