@@ -13,6 +13,9 @@ ap.add_argument("sigma", type=int)
 ap.add_argument("denoise", type=str)
 args = ap.parse_args()
 
+#string to bool
+add_noise = args.add_noise.lower() == 'true'
+denoise = args.denoise.lower() == 'true'
 
 methods = ['111', '211', '221', '-111',
                '-1-11', '-121', '2-11', '110', '-110']
@@ -23,13 +26,6 @@ methodsids = [{'method' : m, 'id' : mid}
             for m, mid in zip(methods, ids)]
 
 files = ['input_0']
-
-'''
-self.cfg['denoised'] = {}
-self.cfg['diff'] = {}
-self.cfg['diffrmse'] = {}
-self.cfg['diffpsnr'] = {}
-'''
 
 #resize input to maximum height=400pixels and maximum width=400pixels
 m = 'input_0'
@@ -42,18 +38,16 @@ if dy > 400:
         img.resize((400, int(dy*400/dx)))
     img.save(f'{m}.png')
 
+outname = 'denoised'
+diffname = 'diff'
 
-if args.denoise == 1:
+if denoise:
     #denoise / cartoon+texture
     #p=[]
     for m in methodsids:
         if str(m['method']) == args.method:
             i = int(m['id'])
-            outname = 'denoised_' + str(pqrSet[i][0]) + \
-                    '_' + str(pqrSet[i][1]) + '_' + \
-                    str(pqrSet[i][2])
            
-            #self.cfg['denoised']['%i'%i] = outname
             
             files += [outname]
             p = ['denoisingPDHG_ipol', 'input_0.png', outname + '.png', str(args.lambd), str(pqrSet[i][0]), str(pqrSet[i][1]), str(pqrSet[i][2])]
@@ -66,10 +60,6 @@ if args.denoise == 1:
         if str(m['method']) == args.method:
             i = int(m['id'])
 
-            outname = 'denoised_' + str(pqrSet[i][0]) + \
-                '_' + str(pqrSet[i][1]) + '_' + \
-                str(pqrSet[i][2])
-
             diffname = 'diff_' + str(pqrSet[i][0]) + \
                 '_' + str(pqrSet[i][1]) + '_' + \
                 str(pqrSet[i][2])
@@ -80,7 +70,7 @@ if args.denoise == 1:
             p = ['imdiff_ipol', 'input_0.png', outname + '.png', diffname + '.png', str(sigma)]
             subprocess.run(p)
 
-if args.add_noise:
+if add_noise:
     #add noise
     files += ['noisy']
     p = ['addnoise_ipol', 'input_0.png', 'noisy.png', str(args.sigma)]
@@ -93,11 +83,7 @@ if args.add_noise:
         #if str(self.cfg['param'][m['method']]) == 'True':
         if str(m['method']) == args.method:
             i = int(m['id'])
-            outname = 'denoised_' + str(pqrSet[i][0]) + \
-                        '_' + str(pqrSet[i][1]) + '_' + \
-                        str(pqrSet[i][2])
 
-            #self.cfg['denoised']['%i'%i] = outname
             files += [outname]
 
             p = ['denoisingPDHG_ipol', 'noisy.png', outname + '.png', str(args.lambd), 
@@ -111,15 +97,10 @@ if args.add_noise:
         if str(m['method']) == args.method:
             i = int(m['id'])
 
-            outname = 'denoised_' + str(pqrSet[i][0]) + \
-                '_' + str(pqrSet[i][1]) + '_' + \
-                str(pqrSet[i][2])
-
             diffname = 'diff_' + str(pqrSet[i][0]) + \
                 '_' + str(pqrSet[i][1]) + '_' + \
                 str(pqrSet[i][2])
 
-            #self.cfg['diff']['%i'%i] = diffname
             files += [diffname]
 
             with open(f'{diffname}_rmse.txt', 'w') as file:
@@ -132,20 +113,6 @@ if args.add_noise:
 
             diffname = 'diff_' + str(pqrSet[i][0]) + \
                 '_' + str(pqrSet[i][1]) + '_' + str(pqrSet[i][2])
-
-            '''
-            # Read the _rmse.txt file
-            f = open(diffname + '_rmse.txt', 'r')
-            self.cfg['param']['rmse_' + diffname] = \
-                    '%.2f' % float(f.readline().split(':', 1)[1])
-            self.cfg['param']['psnr_' + diffname] = \
-                    '%.2f' % float(f.readline().split(':', 1)[1])
-            self.cfg['diffrmse']['%i'%i] = \
-                    self.cfg['param']['rmse_' + diffname]
-            self.cfg['diffpsnr']['%i'%i] = \
-                    self.cfg['param']['psnr_' + diffname]
-            f.close()
-            '''
 
 
 # Resize for visualization (always zoom by at least 2x)
@@ -163,18 +130,3 @@ if zoomfactor > 1:
         im.resize((sizeX, sizeY), method='nearest')
         im.save(filename + '_zoom.png')
 
-'''
-    self.cfg['param']['disp_suffix'] = '_zoom.png'
-else:
-    self.cfg['param']['disp_suffix'] = '.png'
-
-self.cfg['param']['zoomfactor'] = zoomfactor
-self.cfg['param']['displayheight'] = max(600, sizeY)
-self.cfg['param']['stdout'] = \
-    open(self.work_dir + 'stdout.txt', 'r').read()
-
-print("Denoised images")
-#print self.cfg['denoised']
-
-#self.cfg.save()
-'''
