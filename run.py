@@ -60,10 +60,6 @@ if denoise:
         if str(m['method']) == args.method:
             i = int(m['id'])
 
-            diffname = 'diff_' + str(pqrSet[i][0]) + \
-                '_' + str(pqrSet[i][1]) + '_' + \
-                str(pqrSet[i][2])
-
             #self.cfg['diff']['%i'%i] = diffname
             files += [diffname]
 
@@ -97,10 +93,6 @@ if add_noise:
         if str(m['method']) == args.method:
             i = int(m['id'])
 
-            diffname = 'diff_' + str(pqrSet[i][0]) + \
-                '_' + str(pqrSet[i][1]) + '_' + \
-                str(pqrSet[i][2])
-
             files += [diffname]
 
             with open(f'{diffname}_rmse.txt', 'w') as file:
@@ -110,9 +102,6 @@ if add_noise:
         #if str(self.cfg['param'][m['method']]) == 'True':
         if str(m['method']) == args.method:
             i = int(m['id'])
-
-            diffname = 'diff_' + str(pqrSet[i][0]) + \
-                '_' + str(pqrSet[i][1]) + '_' + str(pqrSet[i][2])
 
 
 # Resize for visualization (always zoom by at least 2x)
