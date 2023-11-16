@@ -6,16 +6,13 @@ from PIL import Image
 
 # parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("method", type=str)
-ap.add_argument("lambd", type=float)
-ap.add_argument("add_noise", type=str)
-ap.add_argument("sigma", type=int)
-ap.add_argument("denoise", type=str)
+ap.add_argument("--method", type=str)
+ap.add_argument("--lambd", type=float)
+ap.add_argument("--denoise", type=int)
+ap.add_argument("--sigma", type=int)
 args = ap.parse_args()
 
-#string to bool
-add_noise = args.add_noise.lower() == 'true'
-denoise = args.denoise.lower() == 'true'
+add_noise = 1 if not args.denoise else 0
 
 methods = ['111', '211', '221', '-111',
                '-1-11', '-121', '2-11', '110', '-110']
@@ -41,7 +38,7 @@ if dy > 400:
 outname = 'denoised'
 diffname = 'diff'
 
-if denoise:
+if args.denoise:
     #denoise / cartoon+texture
     #p=[]
     for m in methodsids:
