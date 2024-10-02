@@ -29,7 +29,7 @@ m = 'input_0'
 img = Image.open(f'{m}.png')
 (dx, dy) = img.size
 if dy > 400:
-    img.resize((int(dx*400/dy), 400))
+    img = img.resize((int(dx*400/dy), 400))
     (dx, dy) = img.size
     if dx > 400:
         img = img.resize((400, int(dy*400/dx)))
@@ -113,6 +113,6 @@ if zoomfactor > 1:
 
     for filename in files:
         im = Image.open(filename + '.png')
-        im.resize((sizeX, sizeY), method='nearest')
+        im = im.resize((sizeX, sizeY))
         im.save(filename + '_zoom.png')
 
